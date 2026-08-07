@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const opere = await getCollection('scrittura', ({ data }) => !data.bozza);
+  return opere.map((o) => ({ params: { slug: o.id }, props: { opera: o } }));
+}
+
+const { opera } = Astro.props;
+const { Content } = await render(opera);
+
+// Le poesie mantengono gli a-capo esatti dei versi (testo così com'è scritto).
+// La prosa (saggi, racconti, sceneggiature) usa la formattazione ricca.
+const isPoesia = opera.data.categoria === 'Poesia';
+const versi = (opera.body ?? '').trim();
+---
+
+<Base titolo={opera.data.titolo} attiva="scrittura" descrizione={`${opera.data.categoria} di Alessio Grassi`}>
+  <div class="wrap">
+    <article class="reading">
+      <header class="reading__head">
+        <p class="reading__cat label">{opera.data.categoria}</p>
+        <h1 class="reading__title">{opera.data.titolo}</h1>
+        {opera.data.anno && <p class="reading__year">{opera.data.anno}</p>}
+      </header>
+      <div class="reading__body">
+        {isPoesia ? <div class="verso">{versi}</div> : <Content />}
+      </div>
+      <hr class="reading__rule" />
+      <a class="backlink" href="/scrittura">← Torna all'archivio</a>
+    </article>
+  </div>
+</Base>

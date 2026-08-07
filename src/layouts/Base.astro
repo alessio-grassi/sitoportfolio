@@ -1,0 +1,62 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  titolo?: string;
+  descrizione?: string;
+  chrome?: boolean;      // mostra intestazione + piè di pagina (falso nella home)
+  attiva?: 'scrittura' | 'fotografia' | 'info' | null;
+}
+
+const {
+  titolo,
+  descrizione = 'Alessio Grassi — scrittura e fotografia.',
+  chrome = true,
+  attiva = null,
+} = Astro.props;
+
+const titoloPagina = titolo ? `${titolo} — Alessio Grassi` : 'Alessio Grassi';
+const anno = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titoloPagina}</title>
+    <meta name="description" content={descrizione} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f3f2ee'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='20' text-anchor='middle' fill='%231b1b19'%3EA%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    {chrome && (
+      <header class="site-header">
+        <div class="wrap site-header__row">
+          <a class="site-header__name" href="/">Alessio Grassi</a>
+          <nav class="site-nav" aria-label="Sezioni">
+            <a href="/scrittura" aria-current={attiva === 'scrittura' ? 'page' : undefined}>Scrittura</a>
+            <a href="/fotografia" aria-current={attiva === 'fotografia' ? 'page' : undefined}>Fotografia</a>
+            <a href="/info" aria-current={attiva === 'info' ? 'page' : undefined}>Info</a>
+          </nav>
+        </div>
+      </header>
+    )}
+
+    <slot />
+
+    {chrome && (
+      <footer class="site-footer">
+        <div class="wrap site-footer__row">
+          <span>Alessio Grassi</span>
+          <span>© {anno}</span>
+        </div>
+      </footer>
+    )}
+  </body>
+</html>

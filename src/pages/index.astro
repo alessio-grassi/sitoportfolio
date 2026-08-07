@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import cover from '../assets/home-cover.jpg';
+---
+
+<Base chrome={false} descrizione="Alessio Grassi — scrittura e fotografia.">
+  <main class="threshold">
+    <div class="threshold__plate">
+      <Image src={cover} alt="Fotografia in bianco e nero" widths={[600, 900, 1400]} sizes="(max-width: 48rem) 92vw, 46rem" loading="eager" />
+    </div>
+    <div class="threshold__foot">
+      <h1 class="threshold__name">Alessio Grassi</h1>
+      <p class="threshold__sub label">Scrittura · Fotografia</p>
+      <nav class="doors" aria-label="Sezioni principali">
+        <a href="/scrittura">Scrittura</a>
+        <span class="doors__sep" aria-hidden="true">·</span>
+        <a href="/fotografia">Fotografia</a>
+      </nav>
+    </div>
+  </main>
+</Base>

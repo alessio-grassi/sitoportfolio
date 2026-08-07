@@ -1,0 +1,61 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const opere = (await getCollection('scrittura', ({ data }) => !data.bozza)).sort(
+  (a, b) =>
+    a.data.ordine - b.data.ordine ||
+    (b.data.anno ?? 0) - (a.data.anno ?? 0) ||
+    a.data.titolo.localeCompare(b.data.titolo)
+);
+
+const categorie = ['Poesia', 'Saggio', 'Racconto', 'Sceneggiatura'];
+---
+
+<Base titolo="Scrittura" attiva="scrittura" descrizione="Archivio di poesie, saggi, racconti e sceneggiature di Alessio Grassi.">
+  <div class="wrap">
+    <div class="page-head">
+      <p class="page-head__eyebrow label">Archivio</p>
+      <h1 class="page-head__title">Scrittura</h1>
+    </div>
+
+    <div class="filters" role="group" aria-label="Filtra per categoria">
+      <button class="filter" data-filtro="tutte" aria-pressed="true">Tutte</button>
+      {categorie.map((c) => (
+        <button class="filter" data-filtro={c} aria-pressed="false">{c}</button>
+      ))}
+    </div>
+
+    <ul class="index" id="indice">
+      {opere.map((o) => (
+        <li class="index__item" data-categoria={o.data.categoria}>
+          <a class="index__link" href={`/scrittura/${o.id}`}>
+            <span class="index__title">{o.data.titolo}</span>
+            <span class="index__meta">{o.data.categoria}{o.data.anno ? ` · ${o.data.anno}` : ''}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="index__empty" id="vuoto" hidden>Nessuna opera in questa categoria.</p>
+  </div>
+
+  <script>
+    const bottoni = document.querySelectorAll<HTMLButtonElement>('.filter');
+    const voci = document.querySelectorAll<HTMLLIElement>('.index__item');
+    const vuoto = document.getElementById('vuoto');
+
+    bottoni.forEach((b) => {
+      b.addEventListener('click', () => {
+        const scelta = b.dataset.filtro;
+        bottoni.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        let visibili = 0;
+        voci.forEach((v) => {
+          const mostra = scelta === 'tutte' || v.dataset.categoria === scelta;
+          v.hidden = !mostra;
+          if (mostra) visibili++;
+        });
+        if (vuoto) vuoto.hidden = visibili !== 0;
+      });
+    });
+  </script>
+</Base>

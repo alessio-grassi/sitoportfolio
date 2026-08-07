@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import { Image } from 'astro:assets';
+import ritratto from '../assets/portrait.jpg';
+---
+
+<Base titolo="Info" attiva="info" descrizione="Biografia e contatti di Alessio Grassi.">
+  <div class="wrap">
+    <div class="page-head">
+      <p class="page-head__eyebrow label">Info</p>
+      <h1 class="page-head__title">Alessio Grassi</h1>
+    </div>
+
+    <div class="info">
+      <div class="info__grid">
+        <div class="info__portrait">
+          <Image src={ritratto} alt="Ritratto di Alessio Grassi" widths={[300, 520]} sizes="15rem" />
+        </div>
+        <div>
+          <div class="info__bio">
+            <p>Alessio Grassi lavora con la parola scritta e con la fotografia. Questo sito raccoglie le opere finite: poesie, saggi, racconti e sceneggiature da un lato; serie fotografiche in bianco e nero dall'altro.</p>
+            <p>Questo è un testo di esempio. Lo sostituirai con la tua vera biografia quando il sito sarà pronto.</p>
+          </div>
+          <div class="info__contacts">
+            <a href="mailto:ciao@esempio.it">ciao@esempio.it</a>
+            <a href="#" rel="me">Instagram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>

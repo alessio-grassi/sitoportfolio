@@ -1,0 +1,75 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const gallerie = await getCollection('fotografia', ({ data }) => !data.bozza);
+  return gallerie.map((g) => ({ params: { slug: g.id }, props: { galleria: g } }));
+}
+
+const { galleria } = Astro.props;
+---
+
+<Base titolo={galleria.data.titolo} attiva="fotografia" descrizione={`Galleria fotografica ${galleria.data.titolo}`}>
+  <div class="wrap">
+    <div class="page-head">
+      <p class="page-head__eyebrow label">Fotografia{galleria.data.anno ? ` · ${galleria.data.anno}` : ''}</p>
+      <h1 class="page-head__title">{galleria.data.titolo}</h1>
+    </div>
+
+    <div class="grid" id="griglia">
+      {galleria.data.foto.map((f, i) => (
+        <button class="grid__cell" type="button" data-index={i} data-src={f.src} data-cap={f.didascalia ?? ''} aria-label={`Apri foto ${i + 1}`}>
+          <img src={f.src} alt={f.didascalia ?? `Fotografia ${i + 1}`} loading="lazy" />
+        </button>
+      ))}
+    </div>
+
+    <a class="backlink" href="/fotografia">← Torna alle gallerie</a>
+  </div>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto a schermo intero">
+    <button class="lightbox__btn lightbox__close" id="lb-close" aria-label="Chiudi">×</button>
+    <button class="lightbox__btn lightbox__nav lightbox__prev" id="lb-prev" aria-label="Precedente">‹</button>
+    <img class="lightbox__img" id="lb-img" src="" alt="" />
+    <button class="lightbox__btn lightbox__nav lightbox__next" id="lb-next" aria-label="Successiva">›</button>
+    <p class="lightbox__cap" id="lb-cap"></p>
+  </div>
+
+  <script>
+    const celle = Array.from(document.querySelectorAll<HTMLButtonElement>('.grid__cell'));
+    const foto = celle.map((c) => ({ src: c.dataset.src || '', cap: c.dataset.cap || '' }));
+    const lb = document.getElementById('lightbox')!;
+    const lbImg = document.getElementById('lb-img') as HTMLImageElement;
+    const lbCap = document.getElementById('lb-cap')!;
+    let i = 0;
+
+    function mostra(n: number) {
+      i = (n + foto.length) % foto.length;
+      lbImg.src = foto[i].src;
+      lbImg.alt = foto[i].cap || `Fotografia ${i + 1}`;
+      lbCap.textContent = foto[i].cap;
+    }
+    function apri(n: number) {
+      mostra(n);
+      lb.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+    function chiudi() {
+      lb.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    celle.forEach((c, n) => c.addEventListener('click', () => apri(n)));
+    document.getElementById('lb-close')!.addEventListener('click', chiudi);
+    document.getElementById('lb-prev')!.addEventListener('click', (e) => { e.stopPropagation(); mostra(i - 1); });
+    document.getElementById('lb-next')!.addEventListener('click', (e) => { e.stopPropagation(); mostra(i + 1); });
+    lb.addEventListener('click', (e) => { if (e.target === lb) chiudi(); });
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('is-open')) return;
+      if (e.key === 'Escape') chiudi();
+      if (e.key === 'ArrowLeft') mostra(i - 1);
+      if (e.key === 'ArrowRight') mostra(i + 1);
+    });
+  </script>
+</Base>

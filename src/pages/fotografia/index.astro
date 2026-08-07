@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const gallerie = (await getCollection('fotografia', ({ data }) => !data.bozza)).sort(
+  (a, b) =>
+    a.data.ordine - b.data.ordine ||
+    (b.data.anno ?? 0) - (a.data.anno ?? 0) ||
+    a.data.titolo.localeCompare(b.data.titolo)
+);
+---
+
+<Base titolo="Fotografia" attiva="fotografia" descrizione="Gallerie fotografiche in bianco e nero di Alessio Grassi.">
+  <div class="wrap">
+    <div class="page-head">
+      <p class="page-head__eyebrow label">Gallerie</p>
+      <h1 class="page-head__title">Fotografia</h1>
+    </div>
+
+    <ul class="galleries">
+      {gallerie.map((g) => (
+        <li>
+          <a class="gallery-card" href={`/fotografia/${g.id}`}>
+            <div class="gallery-card__frame">
+              <img src={g.data.copertina} alt={`Copertina della galleria ${g.data.titolo}`} loading="lazy" />
+            </div>
+            <div class="gallery-card__caption">
+              <span class="gallery-card__title">{g.data.titolo}</span>
+              <span class="gallery-card__count">{g.data.foto.length} foto</span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
