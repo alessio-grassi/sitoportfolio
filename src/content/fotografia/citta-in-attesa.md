@@ -13,6 +13,4 @@ foto:
     didascalia: "Tomba nel Deserto - Utah "
   - src: /images/AlessioGrassi_34.jpg
     didascalia: Porta del Faro - Croazia
-  - src: /images/fotografia/serie-uno/06.jpg
-    didascalia: Scala esterna
 ---
