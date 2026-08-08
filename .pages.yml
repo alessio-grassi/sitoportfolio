@@ -1,0 +1,91 @@
+media:
+  input: public/images
+  output: /images
+
+content:
+  # ---- SCRITTURA ----
+  - name: scrittura
+    label: Scrittura
+    type: collection
+    path: src/content/scrittura
+    filename: '{fields.titolo}.md'
+    view:
+      fields: [titolo, categoria, anno]
+    fields:
+      - name: titolo
+        label: Titolo
+        type: string
+        required: true
+      - name: categoria
+        label: Categoria
+        type: select
+        required: true
+        options:
+          values: [Poesia, Saggio, Racconto, Sceneggiatura]
+      - name: anno
+        label: Anno
+        type: number
+      - name: ordine
+        label: Ordine (posizione nell'elenco, numero più basso = più in alto)
+        type: number
+        default: 0
+      - name: bozza
+        label: Bozza (nascondi dal sito)
+        type: boolean
+        default: false
+      - name: body
+        label: Testo
+        type: text
+        description: "Per le poesie gli a-capo dei versi vengono mantenuti esattamente come li scrivi."
+
+  # ---- FOTOGRAFIA ----
+  - name: fotografia
+    label: Fotografia (gallerie)
+    type: collection
+    path: src/content/fotografia
+    filename: '{fields.titolo}.md'
+    view:
+      fields: [titolo, anno]
+    fields:
+      - name: titolo
+        label: Titolo della galleria
+        type: string
+        required: true
+      - name: anno
+        label: Anno
+        type: number
+      - name: ordine
+        label: Ordine (posizione tra le gallerie)
+        type: number
+        default: 0
+      - name: bozza
+        label: Bozza (nascondi dal sito)
+        type: boolean
+        default: false
+      - name: copertina
+        label: Copertina della galleria
+        type: image
+      - name: foto
+        label: Foto
+        type: object
+        list: true
+        fields:
+          - name: src
+            label: Immagine
+            type: image
+          - name: didascalia
+            label: Didascalia (opzionale)
+            type: string
+
+  # ---- HOME ----
+  - name: home
+    label: Home (copertina)
+    type: file
+    path: src/data/home.json
+    fields:
+      - name: copertina
+        label: Fotografia di copertina
+        type: image
+      - name: sottotitolo
+        label: Sottotitolo
+        type: string
