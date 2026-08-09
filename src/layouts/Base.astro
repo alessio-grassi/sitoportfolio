@@ -48,7 +48,11 @@ const anno = new Date().getFullYear();
       </header>
     )}
 
-    <slot />
+    {chrome ? (
+      <main class="page-main"><slot /></main>
+    ) : (
+      <slot />
+    )}
 
     {chrome && (
       <footer class="site-footer">
